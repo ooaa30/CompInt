@@ -12,15 +12,25 @@ class Graph:
         self.graph[2]= 42,30,0,12
         self.graph[3]= 35,34,12,0
 
-def generateRoute(graph: Graph):
-    route = list(range(0,graph.size))
-    random.shuffle(route)
-    print (route)
-    #return valid route then evaluation route matches the route to 2d array and generates values
+    def generateRoute(self):
+        route = list(range(0,self.size))
+        random.shuffle(route)
+        print(route)
+        return route
+        #return valid route then evaluation route matches the route to 2d array and generates values
+
+    def evaluateRoute(self,route):
+        total=0
+        for i in range (self.size-1):
+            total += self.graph[route[i]][route[(i+1)%self.size]]
+        total += self.graph[route [self.size-1]][route[0]]
+        print(total)
+        return (total)
+
 
 def main():
     graph = Graph(4)
-    generateRoute(graph)
+    graph.evaluateRoute(graph.generateRoute())
 
 if __name__== "__main__":
     main()

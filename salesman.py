@@ -1,5 +1,10 @@
 import random
 class Graph:
+    # a class to represent the simplified traveling salesman problem
+    # can also perform simple operations over problem
+    # generating valid routes and returning their combined value
+    # simple propogate method and use of size instead of hardcoded values means
+    # it should be easy to read in from a file (NEXT STEP)
     def __init__(self,size):
         self.size = size
         self.graph = None
@@ -17,7 +22,6 @@ class Graph:
         random.shuffle(route)
         print(route)
         return route
-        #return valid route then evaluation route matches the route to 2d array and generates values
 
     def evaluateRoute(self,route):
         total=0

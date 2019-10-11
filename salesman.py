@@ -31,7 +31,6 @@ class Graph:
         print(total)
         return (total)
 
-
 def main():
     graph = Graph(4)
     graph.evaluateRoute(graph.generateRoute())

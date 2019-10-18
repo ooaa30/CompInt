@@ -20,7 +20,7 @@ class Graph:
     def generateRoute(self):
         route = list(range(0,self.size))
         random.shuffle(route)
-        print(route)
+        #print(route)
         return route
 
     def evaluateRoute(self,route):
@@ -28,12 +28,23 @@ class Graph:
         for i in range (self.size-1):
             total += self.graph[route[i]][route[(i+1)%self.size]]
         total += self.graph[route [self.size-1]][route[0]]
-        print(total)
+        #print(total)
         return (total)
+
+    def randomSearch(self,times):
+        total = 1000000
+        optimumRoute=None
+        for i in range(times):
+            route = self.generateRoute()
+            temp=self.evaluateRoute(route)
+            if(temp<total):
+                total=temp
+                optimumRoute=route
+        str1 = ''.join(str(e) for e in optimumRoute)
+        print("optimum route is "+ str1 + " its value is "+str(total))
 
 def main():
     graph = Graph(4)
-    graph.evaluateRoute(graph.generateRoute())
-
+    graph.randomSearch(30)
 if __name__== "__main__":
     main()

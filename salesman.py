@@ -1,21 +1,29 @@
 import random
+import math
 class Graph:
     # a class to represent the simplified traveling salesman problem
     # can also perform simple operations over problem
     # generating valid routes and returning their combined value
     # simple propogate method and use of size instead of hardcoded values means
     # it should be easy to read in from a file (NEXT STEP)
-    def __init__(self,size):
+    def __init__(self,size,inGraph):
         self.size = size
         self.graph = None
-        self.populate()
+        self.populate(inGraph)
 
-    def populate(self):
+    def populate(self,inGraph):
         self.graph = [[0 for i in range(self.size)] for j in range(self.size)]
-        self.graph[0]= 0,20,42,35
-        self.graph[1]= 20,0,30,34
-        self.graph[2]= 42,30,0,12
-        self.graph[3]= 35,34,12,0
+        for i in range(self.size):
+            for j in range (self.size):
+                if i == j:
+                    self.graph[i][j] = 0
+                else:
+                    ax = float(inGraph[i][0])
+                    ay = float(inGraph[i][1])
+                    bx = float(inGraph[j][0])
+                    by = float(inGraph[j][1])
+                    distance = math.sqrt((bx-ax)**2+(by-ay)**2)
+                    self.graph[i][j] =distance
 
     def generateRoute(self):
         route = list(range(0,self.size))
@@ -32,7 +40,7 @@ class Graph:
         return (total)
 
     def randomSearch(self,times):
-        total = 1000000
+        total = 10000000
         optimumRoute=None
         for i in range(times):
             route = self.generateRoute()
@@ -40,11 +48,32 @@ class Graph:
             if(temp<total):
                 total=temp
                 optimumRoute=route
-        str1 = ''.join(str(e) for e in optimumRoute)
-        print("optimum route is "+ str1 + " its value is "+str(total))
+                optimumRoute=[x+1 for x in optimumRoute]
+        print("Optimum route found with random is:")
+        print(optimumRoute)
+        print("Its value is "+ str(total))
+        print("Iterated through " + str(times) + " times")
+
+
+def readFromFile():
+    out=[]
+    file = open("ulysses16.csv","r")
+    entries =0
+    i =0
+    for line in file:
+        i+=1
+        coords=[]
+        if(i>3):
+            entries+=1
+            fields = line.split(",")
+            coords.append(fields[1])
+            coords.append(fields[2])
+            out.append(coords)
+    return out
 
 def main():
-    graph = Graph(4)
-    graph.randomSearch(30)
+    file = readFromFile()
+    graph = Graph(len(file),file)
+    graph.randomSearch(1000000)
 if __name__== "__main__":
     main()

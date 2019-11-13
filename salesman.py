@@ -134,6 +134,7 @@ def readFromFile():
     for line in file:
         i+=1
         coords=[]
+        print(line)
         if(i>3):
             entries+=1
             fields = line.split(",")
@@ -145,7 +146,7 @@ def readFromFile():
 def main():
     file = readFromFile()
     graph = Graph(len(file),file)
-    graph.timeBoundRandom(30)
-    graph.timeBoundLocalSearch(30)
+    graph.timeBoundRandom(10)
+    graph.timeBoundLocalSearch(10)
 if __name__== "__main__":
     main()

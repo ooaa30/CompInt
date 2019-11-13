@@ -1,4 +1,5 @@
 import random
+from random import randint
 import math
 import time
 class Graph:
@@ -126,6 +127,51 @@ class Graph:
         print(optimumRoute)
         print("Its value is "+ str(total))
 
+    def parentSelection(self,population):
+        parentPool = list()
+        for i in range (len(population)/2):
+            total = 10000000;
+            best = None;
+            for i in range (3):
+                selected = random.choice(population)
+                if(self.evaluate(selected)<total):
+                    total = self.evaluate(selected)
+                    best = selected[:]
+            parentPool.append(best)
+        return parentPool[:]
+
+    def recombine(self,parent1,parent2):
+        child = [None]*len(parent1)
+        half = int(round_down(len(parent1)/2))
+        firstVal = randint(0,(len(parent1)-1))
+        while(firstVal + half > len(parent1)-1):
+            firstVal = randint(0,(len(parent1)-1))
+        endval = int(round_down(firstVal+half))
+        print (firstVal)
+        print (endval)
+        slice = parent1[firstVal:endval]
+        for i in range (len(slice)):
+            child[firstVal+i] =  slice[i]
+        for i in range (len(child)):
+            if parent2[i] not in child:
+                child[child.index(None)] = parent2[i]
+        return child[:]
+
+    def generationBoundEvAl(self,generations,maxPop):
+        total = 10000000
+        optimumRoute=None
+        currentGen = 0
+        population =list()
+        for i in range (maxPop):
+            population.append(self.generateRoute())
+        while currentGen < generations:
+            parentPool=parentSelection(population)
+            population = list()
+            for i in range (len(parentPool)*2):
+                parent1 = random.choice(parentPool)
+                parent2 = random.choice(parentPool)
+
+
 def readFromFile():
     out=[]
     file = open("ulysses16.csv","r")
@@ -143,10 +189,23 @@ def readFromFile():
             out.append(coords)
     return out
 
+def round_down(n, decimals=0):
+    multiplier = 10 ** decimals
+    return math.floor(n * multiplier) / multiplier
+
 def main():
     file = readFromFile()
     graph = Graph(len(file),file)
-    graph.timeBoundRandom(10)
-    graph.timeBoundLocalSearch(10)
+    #graph.timeBoundRandom(10)
+    #graph.timeBoundLocalSearch(10)
+    test1 = graph.generateRoute()
+    test2 = graph.generateRoute()
+
+    print (test1)
+    print (test2)
+    print ("")
+
+    child = graph.recombine(test1,test2)
+    print(child)
 if __name__== "__main__":
     main()

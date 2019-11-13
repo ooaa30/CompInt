@@ -1,5 +1,6 @@
 import random
 import math
+import time
 class Graph:
     # a class to represent the simplified traveling salesman problem
     # can also perform simple operations over problem
@@ -28,8 +29,35 @@ class Graph:
     def generateRoute(self):
         route = list(range(0,self.size))
         random.shuffle(route)
-        #print(route)
         return route
+
+    def optSwap(self, route):
+        out = list()
+        out.append(route)
+        for i in range(0,len(route)):
+            for j in range (0,len(route)):
+                tempList = route[:];
+                if (i!=j):
+                    tempList[i],tempList[j] = tempList[j],tempList[i]
+                    if (not (tempList in out)):
+                        temp2 = tempList[:]
+                        temp2.reverse();
+                        if(not (temp2 in out)):
+                            out.append(tempList)
+        return out
+
+    def evaluateSet(self,routes):
+        bestNo= 100000000
+        bestRoute = None
+        for route in routes:
+            temp = self.evaluateRoute(route)
+            #print (temp)
+            if(temp<bestNo):
+                bestNo = temp
+                bestRoute = route[:]
+        #print(bestNo)
+        #print ("")
+        return bestRoute
 
     def evaluateRoute(self,route):
         total=0
@@ -38,6 +66,32 @@ class Graph:
         total += self.graph[route [self.size-1]][route[0]]
         #print(total)
         return (total)
+
+    def timeBoundLocalSearch(self,seconds):
+        timeout = time.time()+seconds
+        previousRoute = self.generateRoute()
+        bestRoute = previousRoute[:]
+        bestTotal = self.evaluateRoute(bestRoute)
+        localBest = bestTotal
+        while True:
+            if(time.time()<=timeout):
+                newRoute = self.evaluateSet(self.optSwap(previousRoute))
+                evaluation = self.evaluateRoute(newRoute)
+                if localBest <= evaluation:
+                    newRoute=self.generateRoute()
+                    localBest = self.evaluateRoute(previousRoute)
+                elif evaluation < localBest:
+                    localBest = evaluation
+                if bestTotal>evaluation:
+                    bestRoute = newRoute[:]
+                    bestTotal = evaluation
+                previousRoute = newRoute[:]
+            else:
+                break
+        bestRoute = [x+1 for x in bestRoute]
+        print("Optimum route found with local search is:")
+        print(bestRoute)
+        print("Its value is "+ str(bestTotal))
 
     def randomSearch(self,times):
         total = 10000000
@@ -54,6 +108,23 @@ class Graph:
         print("Its value is "+ str(total))
         print("Iterated through " + str(times) + " times")
 
+    def timeBoundRandom(self,seconds):
+        timeout=time.time() + seconds
+        total = 10000000
+        optimumRoute=None
+        while True:
+            if(time.time()<=timeout):
+                route = self.generateRoute()
+                temp=self.evaluateRoute(route)
+                if(temp<total):
+                    total=temp
+                    optimumRoute=route
+                    optimumRoute=[x+1 for x in optimumRoute]
+            else:
+                break
+        print("Optimum route found with random is:")
+        print(optimumRoute)
+        print("Its value is "+ str(total))
 
 def readFromFile():
     out=[]
@@ -74,6 +145,7 @@ def readFromFile():
 def main():
     file = readFromFile()
     graph = Graph(len(file),file)
-    graph.randomSearch(1000000)
+    graph.timeBoundRandom(30)
+    graph.timeBoundLocalSearch(30)
 if __name__== "__main__":
     main()

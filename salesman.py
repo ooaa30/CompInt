@@ -24,7 +24,7 @@ class Graph:
                     ay = float(inGraph[i][1])
                     bx = float(inGraph[j][0])
                     by = float(inGraph[j][1])
-                    distance = math.sqrt((bx-ax)**2+(by-ay)**2)
+                    distance = math.sqrt(((ax-bx)**2+(ay-by)**2))
                     self.graph[i][j] =distance
 
     def generateRoute(self):
@@ -34,7 +34,6 @@ class Graph:
 
     def optSwap(self, route):
         out = list()
-        out.append(route)
         for i in range(0,len(route)):
             for j in range (0,len(route)):
                 tempList = route[:];
@@ -62,9 +61,9 @@ class Graph:
 
     def evaluateRoute(self,route):
         total=0
-        for i in range (self.size-1):
+        for i in range (self.size):
             total += self.graph[route[i]][route[(i+1)%self.size]]
-        total += self.graph[route [self.size-1]][route[0]]
+        #total += self.graph[route [self.size-1]][route[0]]
         #print(total)
         return (total)
 
@@ -129,13 +128,13 @@ class Graph:
 
     def parentSelection(self,population):
         parentPool = list()
-        for i in range (len(population)/2):
+        for i in range (int(len(population)/2)):
             total = 10000000;
             best = None;
             for i in range (3):
                 selected = random.choice(population)
-                if(self.evaluate(selected)<total):
-                    total = self.evaluate(selected)
+                if(self.evaluateRoute(selected)<total):
+                    total = self.evaluateRoute(selected)
                     best = selected[:]
             parentPool.append(best)
         return parentPool[:]
@@ -147,8 +146,6 @@ class Graph:
         while(firstVal + half > len(parent1)-1):
             firstVal = randint(0,(len(parent1)-1))
         endval = int(round_down(firstVal+half))
-        print (firstVal)
-        print (endval)
         slice = parent1[firstVal:endval]
         for i in range (len(slice)):
             child[firstVal+i] =  slice[i]
@@ -163,13 +160,34 @@ class Graph:
         currentGen = 0
         population =list()
         for i in range (maxPop):
-            population.append(self.generateRoute())
+            newRoute = self.generateRoute()
+            newVal = self.evaluateRoute(newRoute)
+            if newVal<total:
+                total = newVal
+                optimumRoute = newRoute
+            population.append(newRoute[:])
         while currentGen < generations:
-            parentPool=parentSelection(population)
+            parentPool=self.parentSelection(population)
             population = list()
             for i in range (len(parentPool)*2):
                 parent1 = random.choice(parentPool)
                 parent2 = random.choice(parentPool)
+                child = self.recombine(parent1,parent2)
+                muteVal = random.randint(1,100)
+                if(muteVal <= 50):
+                    mutePool = self.optSwap(child)
+                    child = random.choice(mutePool)
+                childVal = self.evaluateRoute(child)
+                if childVal < total:
+                    total = childVal
+                    optimumRoute = child[:]
+                population.append(child)
+            currentGen +=1
+
+        optimumRoute = [x+1 for x in optimumRoute]
+        print("Optimum route found with Evolutionary algorithm is:")
+        print(optimumRoute)
+        print("Its value is "+ str(total))
 
 
 def readFromFile():
@@ -180,7 +198,6 @@ def readFromFile():
     for line in file:
         i+=1
         coords=[]
-        print(line)
         if(i>3):
             entries+=1
             fields = line.split(",")
@@ -196,16 +213,8 @@ def round_down(n, decimals=0):
 def main():
     file = readFromFile()
     graph = Graph(len(file),file)
-    #graph.timeBoundRandom(10)
-    #graph.timeBoundLocalSearch(10)
-    test1 = graph.generateRoute()
-    test2 = graph.generateRoute()
-
-    print (test1)
-    print (test2)
-    print ("")
-
-    child = graph.recombine(test1,test2)
-    print(child)
+    graph.timeBoundRandom(10)
+    graph.timeBoundLocalSearch(10)
+    graph.generationBoundEvAl(150,100)
 if __name__== "__main__":
     main()

@@ -131,13 +131,18 @@ public:
   }
 };
 
-int main(){
+int main(int argc, char* argv[]){
   srand((unsigned)time(NULL));
-  AntennaArray array(3,90);
-  Swarm swarm(array,3);
+  int antennaCount = strtol(argv[1],nullptr,0);
+  int angle = strtol(argv[2],nullptr,0);
+  AntennaArray array(antennaCount,angle);
+  Swarm swarm(array,antennaCount);
   for(int i=0; i<100;i++){
-    swarm.tick(array,3);
+    swarm.tick(array,antennaCount);
   }
   std::cout << "Best value is: " <<swarm.globalBestValue << '\n';
+  for(auto const& value: swarm.globalBest){
+    std::cout<<value<<std::endl;
+  }
   return 0;
 }

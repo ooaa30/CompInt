@@ -73,8 +73,10 @@ class Graph:
         bestRoute = previousRoute[:]
         bestTotal = self.evaluateRoute(bestRoute)
         localBest = bestTotal
+        times = 0
         while True:
             if(time.time()<=timeout):
+                times+=1
                 newRoute = self.evaluateSet(self.optSwap(previousRoute))
                 evaluation = self.evaluateRoute(newRoute)
                 if localBest <= evaluation:
@@ -83,6 +85,7 @@ class Graph:
                 elif evaluation < localBest:
                     localBest = evaluation
                 if bestTotal>evaluation:
+                    #print(evaluation)
                     bestRoute = newRoute[:]
                     bestTotal = evaluation
                 previousRoute = newRoute[:]
@@ -92,6 +95,7 @@ class Graph:
         print("Optimum route found with local search is:")
         print(bestRoute)
         print("Its value is "+ str(bestTotal))
+        print("ran for " + str(times)+" times")
 
     def randomSearch(self,times):
         total = 10000000
@@ -106,14 +110,16 @@ class Graph:
         print("Optimum route found with random is:")
         print(optimumRoute)
         print("Its value is "+ str(total))
-        print("Iterated through " + str(times) + " times")
+        print("Iterated through " + str(times) + " iterations")
 
     def timeBoundRandom(self,seconds):
         timeout=time.time() + seconds
         total = 10000000
         optimumRoute=None
+        times = 0;
         while True:
             if(time.time()<=timeout):
+                times +=1
                 route = self.generateRoute()
                 temp=self.evaluateRoute(route)
                 if(temp<total):
@@ -125,13 +131,14 @@ class Graph:
         print("Optimum route found with random is:")
         print(optimumRoute)
         print("Its value is "+ str(total))
+        print("ran for " + str(times)+" iterations")
 
     def parentSelection(self,population):
         parentPool = list()
         for i in range (int(len(population)/2)):
             total = 10000000;
             best = None;
-            for i in range (3):
+            for i in range (10):
                 selected = random.choice(population)
                 if(self.evaluateRoute(selected)<total):
                     total = self.evaluateRoute(selected)
@@ -174,7 +181,7 @@ class Graph:
                 parent2 = random.choice(parentPool)
                 child = self.recombine(parent1,parent2)
                 muteVal = random.randint(1,100)
-                if(muteVal <= 50):
+                if(muteVal <= 70):
                     mutePool = self.optSwap(child)
                     child = random.choice(mutePool)
                 childVal = self.evaluateRoute(child)
@@ -188,6 +195,7 @@ class Graph:
         print("Optimum route found with Evolutionary algorithm is:")
         print(optimumRoute)
         print("Its value is "+ str(total))
+        print ("Over "+str(generations)+ " generations")
 
 
 def readFromFile():
@@ -213,8 +221,8 @@ def round_down(n, decimals=0):
 def main():
     file = readFromFile()
     graph = Graph(len(file),file)
-    graph.timeBoundRandom(10)
-    graph.timeBoundLocalSearch(10)
-    graph.generationBoundEvAl(150,100)
+    graph.timeBoundRandom(2)
+    graph.timeBoundLocalSearch(2)
+    graph.generationBoundEvAl(100,120)
 if __name__== "__main__":
     main()

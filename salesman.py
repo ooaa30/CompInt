@@ -32,6 +32,10 @@ class Graph:
         random.shuffle(route)
         return route
 
+    def defaultRoute(self):
+        route = list(range(0,self.size))
+        return route
+
     def optSwap(self, route):
         out = list()
         for i in range(0,len(route)):
@@ -133,6 +137,14 @@ class Graph:
         print("Its value is "+ str(total))
         print("ran for " + str(times)+" iterations")
 
+    def defaultValue(self):
+        route = self.defaultRoute()
+        evaluation = self.evaluateRoute(route)
+        route=[x+1 for x in route]
+        print("List through cities in order is:")
+        print(route)
+        print("Its value is "+ str(evaluation))
+
     def parentSelection(self,population):
         parentPool = list()
         for i in range (int(len(population)/2)):
@@ -206,7 +218,7 @@ def readFromFile():
     for line in file:
         i+=1
         coords=[]
-        if(i>3):
+        if(i>2):
             entries+=1
             fields = line.split(",")
             coords.append(fields[1])
@@ -221,8 +233,9 @@ def round_down(n, decimals=0):
 def main():
     file = readFromFile()
     graph = Graph(len(file),file)
+    graph.defaultValue()
     graph.timeBoundRandom(2)
     graph.timeBoundLocalSearch(2)
-    graph.generationBoundEvAl(100,120)
+    graph.generationBoundEvAl(50,50)
 if __name__== "__main__":
     main()

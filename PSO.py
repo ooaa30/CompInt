@@ -4,26 +4,26 @@ class Particle:
         self.TrainingValues = training
         self.weights = None
         self.populateValues()
-        self.evaluateWeights()
 
     def populateValues(self):
         self.weights = [0 for i in range (len(self.TrainingValues[1])-1)]
         for i in range(len(self.weights)):
             self.weights[i] = random.uniform(0.0,1.0)
-        print(self.weights)
 
     def evaluateDay(self,day):
-        sum = 0
+        total = 0
         day = self.TrainingValues[day]
+        test = 0;
         for i in range(1,len(day)):
-            sum += (day[i]*self.weights[i-1])
-        return sum
+            total += (day[i]*self.weights[i-1])
+        return abs((total - day[0]))
 
     def evaluateWeights(self):
-        sum = []
+        errors = []
         for i in range (len(self.TrainingValues)):
-            sum.append(self.evaluateDay(i))
-        print(sum)
+            errors.append(self.evaluateDay(i))
+        errors = sum(errors)
+        print(errors)
 
 def readFromFile(file):
     out=[]

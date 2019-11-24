@@ -39,7 +39,6 @@ class Particle:
     def tick(self):
         newPosition = []
 
-
 def readFromFile(file):
     out=[]
     file = open(file,"r")

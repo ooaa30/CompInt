@@ -10,12 +10,12 @@ class Particle:
         self.personalBest= self.weights[:]
         self.personalBestValue =self.evaluateWeights()
         self.intertia = 0.721
-        self.attraction = 1.1193
+        self.attraction = 1.19314718056
 
     def generateVelocity(self):
         temporaryValues=self.populateValues()
         for i in range(len(self.weights)):
-            self.velocity.append(self.weights[i]-temporaryValues[i]/2)
+            self.velocity.append((self.weights[i]-temporaryValues[i])/2)
 
     def populateValues(self):
         values = [0 for i in range (len(self.TrainingValues[1])-1)]
@@ -26,7 +26,6 @@ class Particle:
     def evaluateDay(self,day,values):
         total = 0
         day = self.TrainingValues[day]
-        test = 0;
         for i in range(1,len(day)):
             total += (day[i]*values[i-1])
         return abs((total - day[0]))
@@ -35,7 +34,7 @@ class Particle:
         errors = []
         for i in range (len(self.TrainingValues)):
             errors.append(self.evaluateDay(i,self.weights))
-        errors = sum(errors)
+        errors = ((sum(errors)))#/len(self.TrainingValues))
         return(errors)
 
     def tick(self,globalBest):
@@ -74,8 +73,8 @@ class Swarm:
         self.globalBestValue = 100000000000000
         for i in range(swarmSize):
             p=Particle(training)
-            self.swarm.append(p)
             evaluation=p.evaluateWeights()
+            self.swarm.append(p)
             if(evaluation<self.globalBestValue):
                 self.globalBest = p.personalBest[:]
                 self.globalBestValue = evaluation
@@ -87,7 +86,6 @@ class Swarm:
                 self.globalBest = x.personalBest[:]
                 self.globalBestValue = x.personalBestValue
                 print(self.globalBestValue)
-
 
 def readFromFile(file):
     out=[]
@@ -104,10 +102,9 @@ def main():
     trainFile = readFromFile("cwk_train.csv")
     testFile = readFromFile("cwk_test.csv")
     swarm = Swarm(trainFile,130)
-    timeout=time.time()+60
+    timeout=time.time()+30
     for i in range(260):
         swarm.tick()
-    print(swarm.globalBestValue)
     print(swarm.globalBest)
 
 if __name__== "__main__":

@@ -20,7 +20,7 @@ class Particle:
     def populateValues(self):
         values = [0 for i in range (len(self.TrainingValues[1])-1)]
         for i in range(len(values)):
-            values[i] = random.uniform(0.0,1.0)
+            values[i] = random.uniform(-1.0,1.5)
         return (values[:])
 
     def evaluateDay(self,day,values):

@@ -10,7 +10,7 @@ class Particle:
         self.personalBest= self.weights[:]
         self.personalBestValue =self.evaluateWeights()
         self.intertia = 0.721
-        self.attraction = 0.125
+        self.attraction = 1.1931471805
 
     def generateVelocity(self):
         temporaryValues=self.populateValues()
@@ -20,7 +20,7 @@ class Particle:
     def populateValues(self):
         values = [0 for i in range (len(self.TrainingValues[1])-1)]
         for i in range(len(values)):
-            values[i] = random.uniform(-1.0,1.5)
+            values[i] = random.uniform(-1.0,1.0)
         return (values[:])
 
     def evaluateDay(self,day,values):

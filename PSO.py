@@ -10,7 +10,7 @@ class Particle:
         self.personalBest= self.weights[:]
         self.personalBestValue =self.evaluateWeights()
         self.intertia = 0.721
-        self.attraction = 1.19314718056
+        self.attraction = 0.125
 
     def generateVelocity(self):
         temporaryValues=self.populateValues()
@@ -102,8 +102,8 @@ def main():
     trainFile = readFromFile("cwk_train.csv")
     testFile = readFromFile("cwk_test.csv")
     swarm = Swarm(trainFile,130)
-    timeout=time.time()+30
-    for i in range(260):
+    timeout=time.time()+120
+    for i in range(1500):
         swarm.tick()
     print(swarm.globalBest)
 

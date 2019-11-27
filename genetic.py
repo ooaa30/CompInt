@@ -28,6 +28,7 @@ class Solution:
         for i in range (len(self.training)):
             errors.append(self.evaluateDay(i,self.weights))
         errors = ((sum(errors)))#/len(self.TrainingValues))
+        self.evaluationValue = errors
         return(errors)
 
     def mutate(self):
@@ -55,6 +56,7 @@ class Population:
         self.population = []
         self.genrations = generations
         self.training = training
+        self.populationLimit = maxPop
         for i in range(maxPop):
             newPop = Solution(self.training)
             newVal = newPop.evaluateWeights()
@@ -62,8 +64,13 @@ class Population:
                 self.bestValue=newVal
                 self.bestSolution = newPop.weights[:]
             self.population.append(newPop)
-        print(self.bestValue)
-        print(self.bestSolution)
+
+    def selectParents(self):
+        orderedPop = sorted(self.population, key = lambda solution: solution.evaluationValue)
+        numberOfParents = int(self.populationLimit/2)
+        parentPool = orderedPop[:numberOfParents]
+        return parentPool
+
 
 
 def readFromFile(file):
@@ -82,6 +89,9 @@ def main():
     testFile = readFromFile("cwk_test.csv")
     s1 = Solution(trainFile)
     s2=Solution(trainFile)
-    pop = Population(1,5,trainFile)
+    pop = Population(1,12,trainFile)
+    test = pop.selectParents()
+
+
 if __name__== "__main__":
     main()
